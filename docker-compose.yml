@@ -1,0 +1,111 @@
+version: "3.8"
+networks:
+  network-kniotes-elearn:
+    driver: bridge
+  webproxy:
+    external: true
+volumes:
+  kniotes-elearn-mongo-database:
+    driver: local
+services:
+  kniotes_elearn_database:
+    image: mongo
+    container_name: mongo-kniotes-elearn
+    environment:
+      - MONGO_INITDB_DATABASE=kniotes-elearn
+      - MONGO_INITDB_ROOT_USERNAME=elearn
+      - MONGO_INITDB_ROOT_PASSWORD=elearn1234
+    volumes:
+      - kniotes-elearn-mongo-database:/data/db
+    ports:
+      - 27017-27019:27017-27019
+    restart: unless-stopped
+    tty: true
+    networks:
+      - network-kniotes-elearn
+  kniotes_elearn_file_accessor:
+    build:
+      context: .
+      dockerfile: ../elearn_file_accessor/Dockerfile
+      args:
+        APP_HYPERLINK: https://files.kniotes.pl/
+        APP_OIDC_CLIENT_ID: elearn-file-accessor
+        APP_OIDC_CLIENT_SECRET: 6f2b6460-7f32-4130-87df-2651fc7fbf94
+        APP_OIDC_ISSUER: https://auth.kniotes.pl/auth/realms/kniotes
+        APP_OIDC_AUDIENCE: elearn
+        APP_DB_HOST: kniotes_elearn_database
+        APP_DB_PORT: 27017
+        APP_DB_NAME: kniotes-elearn
+        APP_DB_USER: elearn
+        APP_DB_PASSWD: elearn1234
+        APP_DB_AUTH_SOURCE: admin
+    container_name: spring-kniotes-elearn-file-accessor
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3011:8080
+    environment:
+      VIRTUAL_HOST: files.kniotes.pl
+      VIRTUAL_PORT: 3011
+      PROXY_ADDRESS_FORWARDING: "true"
+      LETSENCRYPT_HOST: kniotes.pl
+      LETSENCRYPT_EMAIL: kniotes@we.umg.edu.pl
+    networks:
+      - network-kniotes-elearn
+      - webproxy
+    depends_on:
+      - kniotes_elearn_database
+  kniotes_elearn_course_viewer:
+    build:
+      context: .
+      dockerfile: ../elearn_course_viewer/Dockerfile
+      args:
+        APP_HYPERLINK: https://courses.kniotes.pl/
+        APP_OIDC_CLIENT_ID: elearn-course-viewer
+        APP_OIDC_CLIENT_SECRET: 6f2b6460-7f32-4130-87df-2651fc7fbf94
+        APP_OIDC_ISSUER: https://auth.kniotes.pl/auth/realms/kniotes
+        APP_OIDC_AUDIENCE: elearn
+        APP_DB_HOST: kniotes_elearn_database
+        APP_DB_PORT: 27017
+        APP_DB_NAME: kniotes-elearn
+        APP_DB_USER: elearn
+        APP_DB_PASSWD: elearn1234
+        APP_DB_AUTH_SOURCE: admin
+    container_name: spring-kniotes-elearn-course-viewer
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3012:8080
+    environment:
+      VIRTUAL_HOST: courses.kniotes.pl
+      VIRTUAL_PORT: 3012
+      PROXY_ADDRESS_FORWARDING: "true"
+      LETSENCRYPT_HOST: kniotes.pl
+      LETSENCRYPT_EMAIL: kniotes@we.umg.edu.pl
+    networks:
+      - network-kniotes-elearn
+      - webproxy
+    depends_on:
+      - kniotes_elearn_database
+  # kniotes_elearn_frontend:
+  #   build:
+  #     context: ../
+  #     dockerfile: Dockerfile
+  #     args:
+  #       REACT_APP_KEYCLOAK_REALM: kniotes
+  #       REACT_APP_KEYCLOAK_URL: https://auth.kniotes.pl/auth/
+  #       REACT_APP_KEYCLOAK_CLIENT_ID: elearn
+  #   container_name: nginx-kniotes-elearn-frontend
+  #   restart: unless-stopped
+  #   tty: true
+  #   ports:
+  #     - 3010:3000
+  #   environment:
+  #     VIRTUAL_HOST: elearn.kniotes.pl
+  #     VIRTUAL_PORT: 3010
+  #     PROXY_ADDRESS_FORWARDING: "true"
+  #     LETSENCRYPT_HOST: kniotes.pl
+  #     LETSENCRYPT_EMAIL: kniotes@we.umg.edu.pl
+  #   networks:
+  #     - network-kniotes-elearn
+  #     - webproxy
