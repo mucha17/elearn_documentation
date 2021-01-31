@@ -25,20 +25,8 @@ services:
       - network-kniotes-elearn
   kniotes_elearn_file_accessor:
     build:
-      context: .
-      dockerfile: ../elearn_file_accessor/Dockerfile
-      args:
-        APP_HYPERLINK: https://files.kniotes.pl/
-        APP_OIDC_CLIENT_ID: elearn-file-accessor
-        APP_OIDC_CLIENT_SECRET: 6f2b6460-7f32-4130-87df-2651fc7fbf94
-        APP_OIDC_ISSUER: https://auth.kniotes.pl/auth/realms/kniotes
-        APP_OIDC_AUDIENCE: elearn
-        APP_DB_HOST: kniotes_elearn_database
-        APP_DB_PORT: 27017
-        APP_DB_NAME: kniotes-elearn
-        APP_DB_USER: elearn
-        APP_DB_PASSWD: elearn1234
-        APP_DB_AUTH_SOURCE: admin
+      context: elearn_file_accessor/
+      dockerfile: Dockerfile
     container_name: spring-kniotes-elearn-file-accessor
     restart: unless-stopped
     tty: true
@@ -57,20 +45,8 @@ services:
       - kniotes_elearn_database
   kniotes_elearn_course_viewer:
     build:
-      context: .
-      dockerfile: ../elearn_course_viewer/Dockerfile
-      args:
-        APP_HYPERLINK: https://courses.kniotes.pl/
-        APP_OIDC_CLIENT_ID: elearn-course-viewer
-        APP_OIDC_CLIENT_SECRET: 6f2b6460-7f32-4130-87df-2651fc7fbf94
-        APP_OIDC_ISSUER: https://auth.kniotes.pl/auth/realms/kniotes
-        APP_OIDC_AUDIENCE: elearn
-        APP_DB_HOST: kniotes_elearn_database
-        APP_DB_PORT: 27017
-        APP_DB_NAME: kniotes-elearn
-        APP_DB_USER: elearn
-        APP_DB_PASSWD: elearn1234
-        APP_DB_AUTH_SOURCE: admin
+      context: elearn_course_viewer/
+      dockerfile: Dockerfile
     container_name: spring-kniotes-elearn-course-viewer
     restart: unless-stopped
     tty: true
