@@ -36,7 +36,7 @@ services:
       VIRTUAL_HOST: files.kniotes.pl
       VIRTUAL_PORT: 3011
       PROXY_ADDRESS_FORWARDING: "true"
-      LETSENCRYPT_HOST: kniotes.pl
+      LETSENCRYPT_HOST: files.kniotes.pl
       LETSENCRYPT_EMAIL: kniotes@we.umg.edu.pl
     networks:
       - network-kniotes-elearn
@@ -56,7 +56,7 @@ services:
       VIRTUAL_HOST: courses.kniotes.pl
       VIRTUAL_PORT: 3012
       PROXY_ADDRESS_FORWARDING: "true"
-      LETSENCRYPT_HOST: kniotes.pl
+      LETSENCRYPT_HOST: courses.kniotes.pl
       LETSENCRYPT_EMAIL: kniotes@we.umg.edu.pl
     networks:
       - network-kniotes-elearn
@@ -80,7 +80,7 @@ services:
   #     VIRTUAL_HOST: elearn.kniotes.pl
   #     VIRTUAL_PORT: 3010
   #     PROXY_ADDRESS_FORWARDING: "true"
-  #     LETSENCRYPT_HOST: kniotes.pl
+  #     LETSENCRYPT_HOST: elearn.kniotes.pl
   #     LETSENCRYPT_EMAIL: kniotes@we.umg.edu.pl
   #   networks:
   #     - network-kniotes-elearn
