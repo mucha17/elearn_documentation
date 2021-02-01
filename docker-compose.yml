@@ -63,25 +63,21 @@ services:
       - webproxy
     depends_on:
       - kniotes_elearn_database
-  # kniotes_elearn_frontend:
-  #   build:
-  #     context: ../
-  #     dockerfile: Dockerfile
-  #     args:
-  #       REACT_APP_KEYCLOAK_REALM: kniotes
-  #       REACT_APP_KEYCLOAK_URL: https://auth.kniotes.pl/auth/
-  #       REACT_APP_KEYCLOAK_CLIENT_ID: elearn
-  #   container_name: nginx-kniotes-elearn-frontend
-  #   restart: unless-stopped
-  #   tty: true
-  #   ports:
-  #     - 3010:3000
-  #   environment:
-  #     VIRTUAL_HOST: elearn.kniotes.pl
-  #     VIRTUAL_PORT: 3010
-  #     PROXY_ADDRESS_FORWARDING: "true"
-  #     LETSENCRYPT_HOST: elearn.kniotes.pl
-  #     LETSENCRYPT_EMAIL: kniotes@we.umg.edu.pl
-  #   networks:
-  #     - network-kniotes-elearn
-  #     - webproxy
+  kniotes_elearn_frontend:
+    build:
+      context: elearn_frontend/
+      dockerfile: Dockerfile
+    container_name: nginx-kniotes-elearn-frontend
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3010:3000
+    environment:
+      VIRTUAL_HOST: elearn.kniotes.pl
+      VIRTUAL_PORT: 3010
+      PROXY_ADDRESS_FORWARDING: "true"
+      LETSENCRYPT_HOST: elearn.kniotes.pl
+      LETSENCRYPT_EMAIL: kniotes@we.umg.edu.pl
+    networks:
+      - network-kniotes-elearn
+      - webproxy
